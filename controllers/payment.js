@@ -102,3 +102,34 @@ exports.verifyPayment = async (req, res) => {
     })
   }
 };
+
+
+exports.verifyPaymentWebhook = async (req, res) => {
+  try {
+    const { event, data } = req.body;
+    const payment = await paymentModel.findOne({ reference: data?.reference });
+    if (payment === null) {
+      return res.status(404).json({
+        message: 'Payment not found'
+      })
+    }
+    if (event === 'charge.success') {
+      payment.status = 'Successful'
+      await payment.save();
+      res.status(200).json({
+        message: 'Payment Verified Successfully via Webhook'
+      })
+    } else if (event === 'charge.failed'){
+      payment.status = 'Failed'
+      await payment.save();
+      res.status(200).json({
+        message: 'Payment Failed via Webhook'
+      })
+    }
+
+  } catch (error) {
+    res.status(500).json({
+      message: 'Error verifying payment via webhook: ' + error.message
+    })
+  }
+};
