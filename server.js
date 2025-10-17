@@ -46,7 +46,7 @@ const swaggerDefinition = {
   },
   servers: [
     {
-      url: 'http://localhost:1234',
+      url: 'https://cohort6-swagger-class.onrender.com',
       description: 'Production server',
     },
     {
