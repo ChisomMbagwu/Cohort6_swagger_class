@@ -2,8 +2,9 @@ const userModel = require('../models/user');
 const cloudinary = require('../config/cloudinary');
 const bcrypt = require('bcrypt');
 const { registerOTP } = require('../utils/email');
-const { sendMail } = require('../utils/nodemailer');
+// const { sendMail } = require('../utils/nodemailer');
 const jwt = require('jsonwebtoken');
+const { sendMail } = require('../utils/brevo');
 
 
 exports.register = async (req, res) => {
@@ -167,14 +168,14 @@ exports.login = async (req, res) => {
 
 exports.getAll = async (req, res) => {
   try {
-    const allUsers = await userModel.find();
+    const allUsers = await userModel.find().select('-password -otp -otpExpiredAt -__v');
     res.status(200).json({
       message: `All users available and the total is: ${allUsers.length}`,
       data: allUsers
     })
   } catch (error) {
     res.status(500).json({
-      message: "Error fetching all users: " + error.mesaage
+      message: "Error fetching all users: " + error.message
     })
   }
 }
