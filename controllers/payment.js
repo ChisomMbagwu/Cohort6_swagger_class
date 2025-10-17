@@ -116,13 +116,13 @@ exports.verifyPaymentWebhook = async (req, res) => {
     if (event === 'charge.success') {
       payment.status = 'Successful'
       await payment.save();
-      res.status(200).json({
+      return res.status(200).json({
         message: 'Payment Verified Successfully via Webhook'
       })
     } else if (event === 'charge.failed'){
       payment.status = 'Failed'
       await payment.save();
-      res.status(200).json({
+      return res.status(200).json({
         message: 'Payment Failed via Webhook'
       })
     }
